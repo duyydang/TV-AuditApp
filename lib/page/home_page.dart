@@ -20,12 +20,6 @@ class HomePage extends StatelessWidget {
             return ServerTrustAuthResponse(
                 action: ServerTrustAuthResponseAction.PROCEED);
           },
-          // Only use for Android, IOS error
-          androidOnGeolocationPermissionsShowPrompt:
-              (InAppWebViewController controller, String origin) async {
-            return Future.value(GeolocationPermissionShowPromptResponse(
-                origin: origin, allow: true, retain: true));
-          },
           //Handler with Javascript
           onWebViewCreated: (controller) {
             controller.addJavaScriptHandler(
