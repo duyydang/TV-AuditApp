@@ -14,6 +14,11 @@ class HomePage extends StatelessWidget {
         top: true,
         bottom: true,
         child: InAppWebView(
+          initialOptions: InAppWebViewGroupOptions(
+            crossPlatform: InAppWebViewOptions(
+                supportZoom: false,
+                preferredContentMode: UserPreferredContentMode.MOBILE),
+          ),
           initialUrlRequest: URLRequest(url: Uri.parse(myCustomUrl)),
           onReceivedServerTrustAuthRequest: (controller, challenge) async {
             //Do some checks here to decide if CANCELS or PROCEEDS
