@@ -1,5 +1,7 @@
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
@@ -26,13 +28,26 @@ class HomePage extends StatelessWidget {
                 action: ServerTrustAuthResponseAction.PROCEED);
           },
           //Handler with Javascript
-          onWebViewCreated: (controller) {
+          onWebViewCreated: (InAppWebViewController controller) {
             controller.addJavaScriptHandler(
               handlerName: "SendLocation",
               callback: (data) {
                 //Data is handler from Javascript
               },
             );
+          },
+          onDownloadStart: (controller, url) async {
+            print("onDownloadStart $url");
+            final urlStr = url.toString(); // Convert uri to string
+            final taskId = await FlutterDownloader.enqueue(
+              url: urlStr,
+              savedDir: (await getExternalStorageDirectory())!.path,
+              showNotification:
+                  true, // show download progress in status bar (for Android)
+              openFileFromNotification:
+                  true, // click on notification to open downloaded file (for Android)
+            );
+            print("Download task ID: $taskId");
           },
         ),
       ),
