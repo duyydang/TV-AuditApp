@@ -5,11 +5,9 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // await FlutterDownloader.initialize();
   await Permission.camera.request();
   await Permission.location.request();
-  await FlutterDownloader.initialize(
-      debug: true // optional: set false to disable printing logs to console
-      );
   await Permission.storage.request();
   runApp(const MyApp());
 }
