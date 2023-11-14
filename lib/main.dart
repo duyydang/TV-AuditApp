@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tv_audit/page/home_page.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await FlutterDownloader.initialize();
   await Permission.camera.request();
   await Permission.location.request();
-  await Permission.storage.request();
   runApp(const MyApp());
 }
 

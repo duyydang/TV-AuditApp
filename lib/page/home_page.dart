@@ -1,7 +1,6 @@
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
@@ -18,19 +17,15 @@ class HomePage extends StatelessWidget {
     ios: IOSInAppWebViewOptions(
       allowsInlineMediaPlayback: true,
     ),
+    android: AndroidInAppWebViewOptions(
+      useHybridComposition: true,
+      supportMultipleWindows: true,
+    ),
   );
 
-  Future<String> getStorageDirectory() async {
-    final downloadsDir = await getDownloadsDirectory();
-    if (downloadsDir != null) {
-      return downloadsDir.path;
-    } else {
-      final externalDir = await getExternalStorageDirectory();
-      if (externalDir != null) {
-        return externalDir.path;
-      } else {
-        throw Exception('No storage directory available');
-      }
+  Future<void> _launchUrl(url) async {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
     }
   }
 
@@ -51,27 +46,7 @@ class HomePage extends StatelessWidget {
                 action: ServerTrustAuthResponseAction.PROCEED);
           },
           onDownloadStartRequest: (controller, url) async {
-            print('On Downloading');
-            // Get the appropriate storage directory
-            final storageDir = await getStorageDirectory();
-            // Generate a unique filename based on the URL
-            final urlString = url.url.toString();
-            String formattedDate =
-                '${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}${DateTime.now().day.toString().padLeft(2, '0')}';
-            final filename = '$formattedDate.${urlString.split('/').last}';
-            print(filename);
-
-            // Enqueue the download with the generated filename
-            await FlutterDownloader.enqueue(
-              url: urlString,
-              fileName: filename,
-              savedDir: storageDir,
-              showNotification: true,
-              requiresStorageNotLow: false,
-              openFileFromNotification:
-                  false, // Set this to false to prevent automatic file opening
-              saveInPublicStorage: true,
-            );
+            _launchUrl(url.url);
           },
         ),
       ),
